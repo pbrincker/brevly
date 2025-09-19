@@ -4,18 +4,21 @@
 # Estágio de build
 FROM node:20-alpine AS builder
 
+# Instala pnpm
+RUN npm install -g pnpm
+
 # Define o diretório de trabalho
 WORKDIR /app
 
 # Copia os arquivos de configuração
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 COPY tsconfig*.json ./
 COPY vite.config.ts ./
 COPY tailwind.config.js ./
 COPY postcss.config.js ./
 
 # Instala as dependências
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copia o código fonte
 COPY src/ ./src/
@@ -23,7 +26,7 @@ COPY public/ ./public/
 COPY index.html ./
 
 # Compila a aplicação
-RUN npm run build
+RUN pnpm run build
 
 # Estágio de produção com Nginx
 FROM nginx:alpine AS production
@@ -34,12 +37,18 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Copia os arquivos compilados do estágio de build
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Define permissões corretas (nginx já existe na imagem base)
+# Define permissões corretas para usuário nginx
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chmod -R 755 /usr/share/nginx/html && \
     chown -R nginx:nginx /var/cache/nginx && \
     chown -R nginx:nginx /var/log/nginx && \
-    chown -R nginx:nginx /etc/nginx/conf.d
+    chown -R nginx:nginx /etc/nginx/conf.d && \
+    # Cria diretórios necessários para nginx não-root
+    mkdir -p /tmp/nginx && \
+    chown -R nginx:nginx /tmp/nginx && \
+    chmod -R 755 /tmp/nginx && \
+    # Garante que o diretório /tmp tenha as permissões corretas para o PID
+    chmod 1777 /tmp
 
 # Muda para o usuário nginx
 USER nginx

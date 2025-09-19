@@ -4,28 +4,31 @@
 # Estágio de build
 FROM node:18-alpine AS builder
 
+# Instala pnpm
+RUN npm install -g pnpm
+
 # Define o diretório de trabalho
 WORKDIR /app
 
 # Copia os arquivos de configuração
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 COPY tsconfig.json ./
 COPY drizzle.config.ts ./
 
 # Instala TODAS as dependências (incluindo devDependencies para o build)
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copia o código fonte
 COPY src/ ./src/
 
 # Compila o TypeScript
-RUN npm run build
+RUN pnpm run build
 
 # Estágio de produção
 FROM node:18-alpine AS production
 
-# Instala dumb-init para gerenciar processos
-RUN apk add --no-cache dumb-init
+# Instala pnpm e dumb-init para gerenciar processos
+RUN npm install -g pnpm && apk add --no-cache dumb-init
 
 # Cria usuário não-root para segurança
 RUN addgroup -g 1001 -S nodejs
@@ -35,10 +38,10 @@ RUN adduser -S nodejs -u 1001
 WORKDIR /app
 
 # Copia os arquivos de configuração
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Instala apenas as dependências de produção
-RUN npm ci --only=production && npm cache clean --force
+RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 
 # Copia os arquivos compilados do estágio de build
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist

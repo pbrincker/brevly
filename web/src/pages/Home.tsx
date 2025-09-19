@@ -4,7 +4,7 @@ import { CreateLinkForm } from '../components/CreateLinkForm';
 import { LinksList } from '../components/LinksList';
 import { Logo } from '../components/Logo';
 import { useApi } from '../services/api';
-import { CreateLinkFormData, Link } from '../types/index';
+import { CreateLinkFormData } from '../types/index';
 
 export function Home() {
   const queryClient = useQueryClient();
@@ -32,9 +32,9 @@ export function Home() {
         queryClient.invalidateQueries({ queryKey: ['links'] });
       }
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('Erro ao criar link:', error);
-      const errorMessage = error?.message || 'Erro ao criar link. Tente novamente.';
+      const errorMessage = (error as Error)?.message || 'Erro ao criar link. Tente novamente.';
       alert(errorMessage);
     },
   });
@@ -81,44 +81,51 @@ export function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Logo width={120} height={30} />
+      {/* Header com Logo */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center">
+            <Logo width={97} height={24} />
           </div>
-          <p className="text-xl text-gray-600">
-            Encurte suas URLs de forma rápida e segura
-          </p>
         </div>
+      </header>
 
-        <div className="max-w-4xl mx-auto space-y-8">
-          <CreateLinkForm
-            onSubmit={handleCreateLink}
-            isLoading={createLinkMutation.isPending}
-            createdLink={createdLink}
-          />
+      {/* Conteúdo Principal */}
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">
+          {/* Seção Esquerda - Novo Link */}
+          <div className="card overflow-hidden flex flex-col" style={{ width: '380px', height: '340px' }}>
+            <CreateLinkForm
+              onSubmit={handleCreateLink}
+              isLoading={createLinkMutation.isPending}
+              createdLink={createdLink}
+            />
+          </div>
 
-          <LinksList
-            links={linksData?.data?.links || []}
-            isLoading={isLoadingLinks}
-            onDelete={handleDeleteLink}
-            onDownloadCsv={handleDownloadCsv}
-            currentPage={currentPage}
-            totalPages={linksData?.data?.totalPages || 1}
-            onPageChange={handlePageChange}
-          />
+          {/* Seção Direita - Meus Links */}
+          <div className="card overflow-hidden flex flex-col" style={{ width: '580px', height: '396px' }}>
+            <div className="flex-1 overflow-y-auto">
+              <LinksList
+                links={linksData?.data?.links || []}
+                isLoading={isLoadingLinks}
+                onDelete={handleDeleteLink}
+                onDownloadCsv={handleDownloadCsv}
+                currentPage={currentPage}
+                totalPages={linksData?.data?.totalPages || 1}
+                onPageChange={handlePageChange}
+              />
 
-          {linksError && (
-            <div className="card bg-red-50 border-red-200">
-              <div className="text-center py-4">
-                <p className="text-red-600">
-                  Erro ao carregar links. Tente recarregar a página.
-                </p>
-              </div>
+              {linksError && (
+                <div className="text-center py-4">
+                  <p className="text-red-600">
+                    Erro ao carregar links. Tente recarregar a página.
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

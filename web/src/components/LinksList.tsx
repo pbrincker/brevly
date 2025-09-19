@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link, Copy, Trash2, ExternalLink, Download, Eye } from 'lucide-react';
+import { Copy, Trash, ArrowSquareOut, DownloadSimple } from 'phosphor-react';
 import { Link as LinkType } from '../types/index';
-import { formatDate, formatNumber, getFullShortUrl, copyToClipboard, truncateText } from '../utils/index';
+import { formatNumber, getFullShortUrl, copyToClipboard } from '../utils/index';
 
 interface LinksListProps {
   links: LinkType[];
@@ -39,25 +39,42 @@ export function LinksList({
 
   if (isLoading) {
     return (
-      <div className="card">
-        <div className="flex items-center justify-center py-12">
-          <div className="loading-spinner h-8 w-8"></div>
-          <span className="ml-3 text-gray-600">Carregando links...</span>
-        </div>
+      <div className="flex items-center justify-center py-12">
+        <div className="loading-spinner h-8 w-8"></div>
+        <span className="ml-3 text-gray-600">Carregando links...</span>
       </div>
     );
   }
 
   if (links.length === 0) {
     return (
-      <div className="card">
+      <div className="animate-fade-in">
+        {/* Header com título e botão CSV */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Meus links
+          </h2>
+          {onDownloadCsv && (
+            <button
+              onClick={onDownloadCsv}
+              className="flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+              title="Baixar relatório CSV"
+            >
+              <DownloadSimple className="mr-1 h-4 w-4" />
+              Baixar CSV
+            </button>
+          )}
+        </div>
+
+        {/* Estado vazio */}
         <div className="text-center py-12">
-          <Link className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Nenhum link encontrado
-          </h3>
-          <p className="text-gray-600">
-            Crie seu primeiro link encurtado para começar
+          <div className="mx-auto w-16 h-16 text-gray-300 mb-4">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+              <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-500 uppercase tracking-wide">
+            AINDA NÃO EXISTEM LINKS CADASTRADOS
           </p>
         </div>
       </div>
@@ -65,102 +82,79 @@ export function LinksList({
   }
 
   return (
-    <div className="card animate-fade-in">
+    <div className="animate-fade-in">
+      {/* Header com título e botão CSV */}
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Seus Links
-          </h2>
-          <p className="text-gray-600">
-            {formatNumber(links.length)} link{links.length !== 1 ? 's' : ''} criado{links.length !== 1 ? 's' : ''}
-          </p>
-        </div>
+        <h2 className="text-lg font-semibold text-gray-900">
+          Meus links
+        </h2>
         {onDownloadCsv && (
           <button
             onClick={onDownloadCsv}
-            className="btn-secondary"
+            className="flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 transition-colors"
             title="Baixar relatório CSV"
           >
-            <Download className="mr-2 h-4 w-4" />
-            Exportar CSV
+            <DownloadSimple className="mr-1 h-4 w-4" />
+            Baixar CSV
           </button>
         )}
       </div>
 
-      <div className="space-y-4">
+      {/* Lista de links */}
+      <div className="space-y-3">
         {links.map((link) => (
           <div
             key={link.id}
-            className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+            className="flex items-center justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1 min-w-0">
-                <div className="mb-2">
-                  <p className="text-sm text-gray-500 mb-1">URL Original</p>
-                  <div className="flex items-center">
-                    <p className="text-sm text-gray-900 break-all">
-                      {truncateText(link.originalUrl, 60)}
-                    </p>
-                    <button
-                      onClick={() => handleOpenLink(link.originalUrl)}
-                      className="ml-2 text-primary-600 hover:text-primary-700"
-                      title="Abrir URL original"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <p className="text-sm text-gray-500 mb-1">URL Encurtada</p>
-                  <div className="flex items-center">
-                    <p className="text-sm font-medium text-primary-600 break-all">
-                      {getFullShortUrl(link.shortUrl)}
-                    </p>
-                    <button
-                      onClick={() => handleCopyLink(link.shortUrl)}
-                      className="ml-2 text-gray-400 hover:text-gray-600"
-                      title="Copiar link"
-                    >
-                      <Copy className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleOpenLink(getFullShortUrl(link.shortUrl))}
-                      className="ml-2 text-gray-400 hover:text-gray-600"
-                      title="Abrir link em nova aba"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4 text-xs text-gray-500">
-                  <div className="flex items-center">
-                    <Eye className="mr-1 h-3 w-3" />
-                    {formatNumber(link.accessCount)} acesso{link.accessCount !== 1 ? 's' : ''}
-                  </div>
-                  <div>
-                    Criado em {formatDate(link.createdAt)}
-                  </div>
-                </div>
+            {/* Informações do link */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center mb-1">
+                <a href={getFullShortUrl(link.shortUrl)} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-blue-600 mr-2">
+                  {getFullShortUrl(link.shortUrl)}
+                </a>
+                <button
+                  onClick={() => handleCopyLink(link.shortUrl)}
+                  className="text-gray-400 hover:text-gray-600 p-1"
+                  title="Copiar link"
+                >
+                  <Copy className="h-3 w-3" />
+                </button>
               </div>
-
-              <div className="flex items-center space-x-2 ml-4">
-                {onDelete && (
-                  <button
-                    onClick={() => handleDeleteLink(link.id)}
-                    className="text-red-600 hover:text-red-700 p-1"
-                    title="Deletar link"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                )}
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-gray-500 truncate flex-1 mr-4">
+                  {link.originalUrl}
+                </p>
+                <p className="text-xs text-gray-400 whitespace-nowrap">
+                  {formatNumber(link.accessCount)} acessos
+                </p>
               </div>
+            </div>
+
+            {/* Botões de ação */}
+            <div className="flex items-center space-x-2 ml-4">
+              <button
+                onClick={() => handleOpenLink(getFullShortUrl(link.shortUrl))}
+                className="text-gray-400 hover:text-gray-600 p-1"
+                title="Abrir link"
+              >
+                <ArrowSquareOut className="h-4 w-4" />
+              </button>
+              {onDelete && (
+                <button
+                  onClick={() => handleDeleteLink(link.id)}
+                  className="text-gray-400 hover:text-red-600 p-1"
+                  title="Deletar link"
+                >
+                  <Trash className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
 
+      {/* Paginação */}
       {totalPages > 1 && onPageChange && (
         <div className="flex items-center justify-center space-x-2 mt-6">
           <button

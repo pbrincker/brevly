@@ -67,10 +67,10 @@ services:
       target: production
     container_name: brevly-frontend
     environment:
-      VITE_FRONTEND_URL: http://localhost:3000
+      VITE_FRONTEND_URL: http://localhost:5175
       VITE_BACKEND_URL: http://localhost:3333
     ports:
-      - "3000:80"
+      - "5175:80"
     depends_on:
       - backend
     networks:

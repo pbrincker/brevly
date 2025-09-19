@@ -21,6 +21,9 @@ export interface EnvironmentConfig {
   // Configurações de CORS
   corsOrigins: string[];
   
+  // Configurações do Frontend
+  frontendUrl: string;
+  
   // Configurações de Segurança
   sessionMaxAge: number;
   rateLimitMax: number;
@@ -32,7 +35,7 @@ export interface EnvironmentConfig {
  */
 export function getEnvironmentConfig(): EnvironmentConfig {
   // Para desenvolvimento, usar valores padrão se as variáveis não estiverem definidas
-  const databaseUrl = process.env['DATABASE_URL'] || 'postgresql://brevly_user:brevly_password@localhost:5432/brevly';
+  const databaseUrl = process.env['DATABASE_URL'] || 'postgresql://brevly_user:brevly_password@postgres:5432/brevly';
   const cloudflareAccountId = process.env['CLOUDFLARE_ACCOUNT_ID'] || 'temp_account_id';
   const cloudflareAccessKeyId = process.env['CLOUDFLARE_ACCESS_KEY_ID'] || 'temp_access_key';
   const cloudflareSecretAccessKey = process.env['CLOUDFLARE_SECRET_ACCESS_KEY'] || 'temp_secret_key';
@@ -43,6 +46,9 @@ export function getEnvironmentConfig(): EnvironmentConfig {
   const corsOrigins = process.env['CORS_ORIGIN'] 
     ? process.env['CORS_ORIGIN'].split(',').map(origin => origin.trim())
     : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176', 'http://localhost:5177'];
+
+  // Configuração do Frontend
+  const frontendUrl = process.env['FRONTEND_URL'] || 'http://localhost:5173';
 
   return {
     // Configurações do Servidor
@@ -61,6 +67,9 @@ export function getEnvironmentConfig(): EnvironmentConfig {
     
     // Configurações de CORS
     corsOrigins,
+    
+    // Configurações do Frontend
+    frontendUrl,
     
     // Configurações de Segurança
     sessionMaxAge: parseInt(process.env['SESSION_MAX_AGE'] || '86400', 10),

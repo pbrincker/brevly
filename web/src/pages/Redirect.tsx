@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Logo } from '../components/Logo';
-import { useApi } from '../services/api';
 
 export function Redirect() {
   const { shortUrl } = useParams<{ shortUrl: string }>();
   const navigate = useNavigate();
-  const [status, setStatus] = useState<'loading' | 'redirecting' | 'error'>('loading');
-  const [error, setError] = useState<string>('');
-  const api = useApi();
+  const [status, setStatus] = useState<'loading' | 'redirecting'>('loading');
 
   console.log('Redirect component rendered with shortUrl:', shortUrl);
 
@@ -20,8 +17,8 @@ export function Redirect() {
       
       if (!shortUrl) {
         console.log('No shortUrl provided');
-        setError('URL encurtada não fornecida');
-        setStatus('error');
+        // Redireciona para a página 404 quando não há shortUrl
+        navigate('/404', { replace: true });
         return;
       }
 
@@ -31,31 +28,30 @@ export function Redirect() {
       }
 
       try {
-        console.log('Making API request for shortUrl:', shortUrl);
+        console.log('Redirecting to backend URL that increments counter:', shortUrl);
         setStatus('redirecting');
         
-        const response = await api.getLinkByShortUrl(shortUrl);
-        console.log('API response:', response);
+        // Redireciona diretamente para a rota do backend que incrementa o contador
+        // A rota /:shortUrl no backend vai incrementar o accessCount e redirecionar automaticamente
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3333';
+        const redirectUrl = `${backendUrl}/${shortUrl}`;
         
-        if (response.success && response.data?.originalUrl) {
-          const originalUrl = response.data.originalUrl;
-          console.log('Redirecting to:', originalUrl);
-          redirected = true;
-          setTimeout(() => {
-            window.location.href = originalUrl;
-          }, 1000);
-        } else {
-          throw new Error('Link não encontrado');
-        }
+        console.log('Redirecting to:', redirectUrl);
+        redirected = true;
+        
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 1000);
+        
       } catch (error) {
         console.error('Erro ao redirecionar:', error);
-        setError('Link não encontrado ou expirado');
-        setStatus('error');
+        // Redireciona para a página 404 quando o link não é encontrado
+        navigate('/404', { replace: true });
       }
     };
 
     handleRedirect();
-  }, [shortUrl]);
+  }, [shortUrl, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -78,29 +74,14 @@ export function Redirect() {
               Redirecionando...
             </h1>
             <p className="text-gray-600 mb-4">
-              Você será redirecionado em instantes!
+              O link será aberto automaticamente em alguns instantes.
+            </p>
+            <p className="text-gray-600 mb-4">
+              Não foi redirecionado?  <a href={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3333'}/${shortUrl}`} className="text-blue-600 hover:text-blue-800 underline">Acesse aqui</a>
             </p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
           </>
         )}
-        
-        {status === 'error' && (
-          <>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              Erro
-            </h1>
-            <p className="text-red-600 mb-4">
-              {error}
-            </p>
-            <button
-              onClick={() => navigate('/')}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Voltar para Home
-            </button>
-          </>
-        )}
-        
       </div>
     </div>
   );

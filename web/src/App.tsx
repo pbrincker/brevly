@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Home } from './pages/Home';
 import { Redirect } from './pages/Redirect';
 import { NotFound } from './pages/NotFound';
+import Error404 from './pages/Error404';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -32,6 +33,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/404" element={<Error404 />} />
             <Route path="/:shortUrl" element={<Redirect />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,285 +1,239 @@
 # Brev.ly - Encurtador de URLs
 
-🔗 Um encurtador de URLs moderno e escalável, construído com Fastify, TypeScript, PostgreSQL e React.
-
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Fastify](https://img.shields.io/badge/fastify-202020?style=for-the-badge&logo=fastify&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+Um sistema completo de encurtamento de URLs com contagem de acessos, relatórios CSV e armazenamento em nuvem.
 
 ## 🚀 Funcionalidades
 
-- **Encurtamento de URLs**: Criação de links curtos e personalizados
-- **Contador de Acessos**: Rastreamento automático de cliques
-- **Relatórios CSV**: Exportação de dados com upload para Cloudflare R2
-- **API RESTful**: Endpoints completos para gerenciamento de links
-- **Interface Moderna**: Frontend React com Tailwind CSS
-- **Validação Robusta**: Sanitização e validação de URLs
-- **Segurança**: Middlewares de proteção contra ataques comuns
+- ✅ **Encurtamento de URLs**: Criação de links curtos personalizados
+- ✅ **Contagem de Acessos**: Rastreamento automático de cliques em cada link
+- ✅ **Relatórios CSV**: Exportação de dados para análise
+- ✅ **Armazenamento R2**: Upload automático para Cloudflare R2
+- ✅ **API RESTful**: Interface completa para integração
+- ✅ **Interface Web**: Frontend React com design responsivo
+
+## 🔧 Correções Recentes (v1.0.1)
+
+### Problemas Resolvidos:
+
+1. **✅ Erro FST_ERR_CTP_EMPTY_JSON_BODY**: Corrigida geração de relatórios CSV
+2. **✅ Contagem de Acessos**: Implementada e testada funcionalidade de tracking
+3. **✅ Dependências Drizzle**: Mantidas versões estáveis e compatíveis (drizzle-orm ^0.29.3, drizzle-kit ^0.20.6) com scripts corrigidos
+
+### Como Aplicar as Correções:
+
+```bash
+cd server
+
+# Windows
+update-dependencies.bat
+
+# Linux/Mac
+chmod +x update-dependencies.sh
+./update-dependencies.sh
+
+# Gerar e aplicar migrações
+npm run db:generate
+npm run db:migrate
+
+# Testar funcionalidades
+node test-redirect.js
+npm run dev
+```
 
 ## 🏗️ Arquitetura
 
-### Backend (Fastify + TypeScript)
+### Backend (Node.js + Fastify)
 
 - **Framework**: Fastify para alta performance
-- **Banco de Dados**: PostgreSQL com Drizzle ORM
-- **Validação**: Zod para schemas e validação
-- **Storage**: Cloudflare R2 para arquivos CSV
-- **Segurança**: Middlewares de proteção e sanitização
+- **ORM**: Drizzle ORM com PostgreSQL
+- **Armazenamento**: Cloudflare R2 para arquivos CSV
+- **Validação**: Zod para schemas de validação
 
 ### Frontend (React + TypeScript)
 
 - **Framework**: React 18 com TypeScript
-- **Estilização**: Tailwind CSS
-- **Gerenciamento de Estado**: TanStack Query
+- **Styling**: Tailwind CSS
 - **Build**: Vite para desenvolvimento rápido
 
-## 📋 Pré-requisitos
+### Banco de Dados
 
-- Node.js 18+ ou 20+
+- **Sistema**: PostgreSQL
+- **Migrações**: Drizzle Kit
+- **Schema**: Links, relatórios e índices otimizados
+
+## 🚀 Quick Start
+
+### Pré-requisitos
+
+- Node.js 18+
 - PostgreSQL 14+
-- Docker e Docker Compose (opcional)
-- Conta no Cloudflare R2 (para relatórios CSV)
+- Docker (opcional)
 
-## 🛠️ Instalação
-
-### 1. Clone o repositório
+### 1. Clone o Repositório
 
 ```bash
-git clone https://github.com/username/brevly.git
+git clone <repository-url>
 cd brevly
 ```
 
-### 2. Configure as variáveis de ambiente
-
-Crie os arquivos de ambiente baseados nos exemplos:
-
-#### Backend (server/.env)
-
-```bash
-cp server/.env.example server/.env
-```
-
-Edite `server/.env` com suas configurações:
-
-```bash
-# Configurações do Servidor
-PORT=3333
-NODE_ENV=development
-
-# Configurações do Banco de Dados
-DATABASE_URL=postgresql://username:password@localhost:5432/brevly_db
-
-# Configurações do Cloudflare R2
-CLOUDFLARE_ACCOUNT_ID=your_account_id
-CLOUDFLARE_ACCESS_KEY_ID=your_access_key_id
-CLOUDFLARE_SECRET_ACCESS_KEY=your_secret_access_key
-CLOUDFLARE_BUCKET=your_bucket_name
-CLOUDFLARE_PUBLIC_URL=https://your-public-domain.com
-
-# Configurações de CORS
-CORS_ORIGIN=http://localhost:3000,http://localhost:5173
-
-# Configurações de Segurança
-SESSION_MAX_AGE=86400
-RATE_LIMIT_MAX=100
-RATE_LIMIT_WINDOW_MS=60000
-```
-
-#### Frontend (web/.env)
-
-```bash
-cp web/.env.example web/.env
-```
-
-Edite `web/.env`:
-
-```bash
-VITE_API_URL=http://localhost:3333/api
-VITE_FRONTEND_URL=http://localhost:5173
-```
-
-### 3. Configure o Cloudflare R2
-
-1. Crie uma conta no [Cloudflare](https://cloudflare.com)
-2. Acesse o R2 Object Storage
-3. Crie um bucket para os relatórios
-4. Configure as credenciais de acesso
-5. Configure um domínio público para o bucket (opcional)
-
-### 4. Instale as dependências
-
-#### Backend
+### 2. Configure o Backend
 
 ```bash
 cd server
+cp env.example .env
+# Edite .env com suas configurações
 npm install
-```
-
-#### Frontend
-
-```bash
-cd web
-npm install
-```
-
-### 5. Configure o banco de dados
-
-```bash
-cd server
 npm run db:generate
 npm run db:migrate
-```
-
-## 🚀 Executando o Projeto
-
-### Desenvolvimento
-
-#### Backend
-
-```bash
-cd server
 npm run dev
 ```
 
-#### Frontend
+### 3. Configure o Frontend
 
 ```bash
 cd web
+cp env.example .env
+# Edite .env com a URL do backend
+npm install
 npm run dev
 ```
 
-### Produção com Docker
+### 4. Acesse a Aplicação
 
-```bash
-# Executar com docker-compose
-docker-compose up -d
+- **Frontend**: http://localhost:5173
+- **Backend**: http://localhost:3333
+- **Health Check**: http://localhost:3333/health
 
-# Para rebuild das imagens
-docker-compose up -d --build
-
-# Para parar os containers
-docker-compose down
-```
-
-## 📚 API Endpoints
+## 📊 API Endpoints
 
 ### Links
 
 - `POST /api/links` - Criar novo link
-- `GET /api/links` - Listar links (com paginação)
-- `GET /api/links/:id` - Obter link específico
+- `GET /api/links` - Listar links com paginação
+- `GET /api/links/:id` - Obter link por ID
 - `DELETE /api/links/:id` - Deletar link
-- `GET /:shortUrl` - Redirecionar para URL original
+
+### Redirecionamento
+
+- `GET /:shortUrl` - Redirecionar e contar acesso
 
 ### Relatórios
 
 - `POST /api/reports/csv` - Gerar relatório CSV
-- `GET /api/reports/csv` - Listar relatórios gerados
+- `GET /api/reports` - Listar relatórios
 
-### Health Check
+## 🧪 Testes
 
-- `GET /health` - Status da aplicação
+### Teste de Contagem de Acessos
 
-## 🔧 Scripts Disponíveis
+```bash
+cd server
+node test-redirect.js
+```
+
+### Teste de Conexão com Banco
+
+```bash
+cd server
+node test-db.js
+```
+
+### Teste de Conexão R2
+
+```bash
+cd server
+npm run test:r2
+```
+
+## 🔒 Variáveis de Ambiente
+
+### Backend (.env)
+
+```env
+# Banco de Dados
+DATABASE_URL=postgresql://user:password@localhost:5432/brevly
+
+# Cloudflare R2
+CLOUDFLARE_ACCOUNT_ID=your_account_id
+CLOUDFLARE_ACCESS_KEY_ID=your_access_key
+CLOUDFLARE_SECRET_ACCESS_KEY=your_secret_key
+CLOUDFLARE_BUCKET=your_bucket_name
+CLOUDFLARE_PUBLIC_URL=https://your-domain.com
+
+# Servidor
+PORT=3333
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:5173
+```
+
+### Frontend (.env)
+
+```env
+VITE_BACKEND_URL=http://localhost:3333
+```
+
+## 🐳 Docker
+
+### Executar com Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+### Executar Apenas o Banco
+
+```bash
+docker-compose up -d postgres
+```
+
+## 📝 Scripts Disponíveis
 
 ### Backend
 
-- `npm run dev` - Executa em modo desenvolvimento
-- `npm run build` - Compila o TypeScript
-- `npm run start` - Executa em modo produção
-- `npm run db:generate` - Gera migrações do banco
-- `npm run db:migrate` - Executa migrações
-- `npm run db:studio` - Abre o Drizzle Studio
+- `npm run dev` - Desenvolvimento com hot reload
+- `npm run build` - Build de produção
+- `npm run start` - Executar build de produção
+- `npm run db:generate` - Gerar migrações
+- `npm run db:migrate` - Aplicar migrações
+- `npm run db:studio` - Abrir Drizzle Studio
 
 ### Frontend
 
-- `npm run dev` - Executa em modo desenvolvimento
-- `npm run build` - Compila para produção
-- `npm run preview` - Preview da build
+- `npm run dev` - Desenvolvimento
+- `npm run build` - Build de produção
+- `npm run preview` - Preview do build
 
-## 🏗️ Estrutura do Projeto
+## 🐛 Troubleshooting
 
-```
-brevly/
-├── server/                 # Backend Fastify
-│   ├── src/
-│   │   ├── config/        # Configurações
-│   │   ├── controllers/   # Controllers da API
-│   │   ├── database/      # Configuração do banco
-│   │   ├── middlewares/   # Middlewares de segurança
-│   │   ├── routes/        # Definição de rotas
-│   │   ├── schemas/       # Schemas de validação
-│   │   ├── services/      # Serviços (R2, etc.)
-│   │   ├── types/         # Tipos TypeScript
-│   │   ├── utils/         # Utilitários
-│   │   └── server.ts      # Entrada da aplicação
-│   ├── Dockerfile
-│   └── package.json
-├── web/                   # Frontend React
-│   ├── src/
-│   │   ├── components/    # Componentes React
-│   │   ├── pages/         # Páginas da aplicação
-│   │   ├── services/      # Serviços de API
-│   │   ├── types/         # Tipos TypeScript
-│   │   ├── utils/         # Utilitários
-│   │   └── main.tsx       # Entrada da aplicação
-│   ├── Dockerfile
-│   └── package.json
-├── docker-compose.yml
-└── README.md
-```
+Para problemas específicos, consulte o [Guia de Troubleshooting](server/TROUBLESHOOTING.md) no diretório do servidor.
 
-## 🔒 Segurança
+### Problemas Comuns:
 
-- **Validação de URLs**: Sanitização e validação rigorosa
-- **Headers de Segurança**: CORS, CSP, XSS Protection
-- **Rate Limiting**: Proteção contra spam
-- **Sanitização**: Remoção de caracteres perigosos
-- **Logs de Segurança**: Monitoramento de tentativas suspeitas
+1. **Erro de migração**: Execute `npm run db:generate` e `npm run db:migrate`
+2. **Erro de conexão**: Verifique se o PostgreSQL está rodando
+3. **Erro de CORS**: Confirme as configurações no arquivo .env
+4. **Erro de R2**: Verifique as credenciais do Cloudflare
 
-## 📊 Monitoramento
-
-- **Health Checks**: Endpoint `/health` para monitoramento
-- **Logs Estruturados**: Logs detalhados com Pino
-- **Métricas**: Contadores de acessos e estatísticas
-
-## 🤝 Contribuindo
+## 🤝 Contribuição
 
 1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📝 Licença
+## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 🚀 Deploy
+## 📞 Suporte
 
-### Variáveis de Ambiente para Produção
+Para suporte técnico ou dúvidas:
 
-Certifique-se de configurar as seguintes variáveis no seu ambiente de produção:
-
-- `NODE_ENV=production`
-- `DATABASE_URL` - URL completa do PostgreSQL
-- `CLOUDFLARE_*` - Credenciais do Cloudflare R2
-- `CORS_ORIGIN` - Domínios permitidos para CORS
-
-### Health Check
-
-O backend expõe um endpoint de health check em `/health` que pode ser usado para monitoramento.
-
-```bash
-curl http://localhost:3333/health
-```
-
-## 🆘 Suporte
-
-Para suporte, abra uma issue no GitHub.
+- Abra uma issue no GitHub
+- Consulte o guia de troubleshooting
+- Verifique os logs do servidor
 
 ---
 
-**Brev.ly** - Encurtando URLs, expandindo possibilidades! 🚀
+**Desenvolvido com ❤️ pela equipe Brev.ly**

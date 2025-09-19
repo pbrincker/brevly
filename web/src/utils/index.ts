@@ -14,7 +14,7 @@ export function formatNumber(num: number): string {
 }
 
 export function getFullShortUrl(shortUrl: string): string {
-  const baseUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5174';
+  const baseUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5175';
   return `${baseUrl}/${shortUrl}`;
 }
 

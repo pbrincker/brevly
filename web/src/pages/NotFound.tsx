@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Home, ArrowLeft } from 'lucide-react';
+import { House, ArrowLeft } from 'phosphor-react';
 import { Logo } from '../components/Logo';
 
 export function NotFound() {
@@ -12,7 +12,7 @@ export function NotFound() {
         </div>
         <div className="mb-8">
           <div className="mx-auto w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-            <Home className="w-12 h-12 text-gray-400" />
+            <House className="w-12 h-12 text-gray-400" />
           </div>
         </div>
 

@@ -1,10 +1,10 @@
 {
-  "id": "4d89220f-cbf4-41c6-b7ce-485428ef5928",
+  "id": "7509c58f-1c87-4805-8ee0-6d73d2107c1b",
   "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
+  "version": "5",
+  "dialect": "pg",
   "tables": {
-    "public.links": {
+    "links": {
       "name": "links",
       "schema": "",
       "columns": {
@@ -60,12 +60,9 @@
             "short_url"
           ]
         }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      }
     },
-    "public.reports": {
+    "reports": {
       "name": "reports",
       "schema": "",
       "columns": {
@@ -113,18 +110,11 @@
             "file_name"
           ]
         }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      }
     }
   },
   "enums": {},
   "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

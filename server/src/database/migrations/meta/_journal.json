@@ -1,12 +1,12 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
+  "version": "5",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
-      "version": "7",
-      "when": 1756599074292,
-      "tag": "0000_nappy_screwball",
+      "version": "5",
+      "when": 1756894295658,
+      "tag": "0000_volatile_texas_twister",
       "breakpoints": true
     }
   ]

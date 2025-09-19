@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, Copy, Loader2, ExternalLink } from 'lucide-react';
+import { Copy, CircleNotch, ArrowSquareOut } from 'phosphor-react';
 import { CreateLinkFormData } from '../types/index';
 import { getFullShortUrl, copyToClipboard } from '../utils/index';
 
@@ -21,15 +21,12 @@ export function CreateLinkForm({ onSubmit, isLoading, createdLink }: CreateLinkF
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    watch,
   } = useForm<FormData>({
     defaultValues: {
       originalUrl: '',
       shortUrl: '',
     },
   });
-
-  const watchedShortUrl = watch('shortUrl');
 
   const handleFormSubmit = async (data: { originalUrl: string; shortUrl: string }) => {
     try {
@@ -48,83 +45,74 @@ export function CreateLinkForm({ onSubmit, isLoading, createdLink }: CreateLinkF
   };
 
   return (
-    <div className="card animate-fade-in">
+    <div className="animate-fade-in">
+      {/* Título da seção */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Criar Link Encurtado
+        <h2 className="text-xl font-bold text-gray-900">
+          Novo link
         </h2>
-        <p className="text-gray-600">
-          Encurte suas URLs de forma rápida e segura
-        </p>
       </div>
 
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+        {/* Campo URL Original */}
         <div>
-          <label htmlFor="originalUrl" className="block text-sm font-medium text-gray-700 mb-2">
-            URL Original *
+          <label htmlFor="originalUrl" className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+            LINK ORIGINAL
           </label>
-          <div className="relative">
-            <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <input
-              {...register('originalUrl')}
-              type="url"
-              id="originalUrl"
-              placeholder="https://exemplo.com/url-muito-longa"
-              className="input pl-10"
-              disabled={isSubmitting || isLoading}
-            />
-          </div>
+          <input
+            {...register('originalUrl')}
+            type="url"
+            id="originalUrl"
+            placeholder="www.exemplo.com.br"
+            className="input"
+            disabled={isSubmitting || isLoading}
+          />
           {errors.originalUrl && (
             <p className="mt-1 text-sm text-red-600">{errors.originalUrl.message}</p>
           )}
         </div>
 
+        {/* Campo URL Encurtada */}
         <div>
-          <label htmlFor="shortUrl" className="block text-sm font-medium text-gray-700 mb-2">
-            URL Encurtada (Opcional)
+          <label htmlFor="shortUrl" className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+            LINK ENCURTADO
           </label>
           <div className="relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none z-10">
-              {window.location.origin}/
+              brev.ly/
             </div>
             <input
               {...register('shortUrl')}
               type="text"
               id="shortUrl"
-              placeholder="minha-url"
-              className="input pl-[calc(1rem+6rem)] relative z-0"
+              placeholder=""
+              className="input pl-[calc(1rem+4rem)] relative z-0"
               disabled={isSubmitting || isLoading}
             />
           </div>
           {errors.shortUrl && (
             <p className="mt-1 text-sm text-red-600">{errors.shortUrl.message}</p>
           )}
-          {watchedShortUrl && (
-            <p className="mt-1 text-sm text-gray-500">
-              URL completa: {getFullShortUrl(watchedShortUrl)}
-            </p>
-          )}
         </div>
 
+        {/* Botão Salvar */}
         <button
           type="submit"
           disabled={isSubmitting || isLoading}
-          className="btn-primary w-full"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting || isLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Criando...
+              <CircleNotch className="mr-2 h-4 w-4 animate-spin inline" />
+              Salvando...
             </>
           ) : (
-            <>
-              <Link className="mr-2 h-4 w-4" />
-              Criar Link
-            </>
+            'Salvar link'
           )}
         </button>
       </form>
 
+      {/* Mensagem de sucesso */}
       {createdLink && (
         <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg animate-slide-up">
           <div className="flex items-center justify-between">
@@ -151,7 +139,7 @@ export function CreateLinkForm({ onSubmit, isLoading, createdLink }: CreateLinkF
                 className="btn-secondary"
                 title="Abrir link em nova aba"
               >
-                <ExternalLink className="h-4 w-4" />
+                <ArrowSquareOut className="h-4 w-4" />
               </a>
             </div>
           </div>

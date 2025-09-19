@@ -5,7 +5,7 @@ export default defineConfig({
   out: './src/database/migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL || 'postgresql://brevly_user:brevly_password@localhost:5432/brevly',
+    url: process.env.DATABASE_URL || 'postgresql://brevly_user:brevly_password@postgres:5432/brevly',
   },
   verbose: true,
   strict: true,
