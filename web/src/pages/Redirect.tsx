@@ -7,42 +7,34 @@ export function Redirect() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<'loading' | 'redirecting'>('loading');
 
-  console.log('Redirect component rendered with shortUrl:', shortUrl);
-
   useEffect(() => {
     let redirected = false;
-    
+
     const handleRedirect = async () => {
-      console.log('handleRedirect called with shortUrl:', shortUrl);
-      
       if (!shortUrl) {
-        console.log('No shortUrl provided');
         // Redireciona para a página 404 quando não há shortUrl
         navigate('/404', { replace: true });
         return;
       }
 
       if (redirected) {
-        console.log('Already redirected, skipping');
         return;
       }
 
       try {
-        console.log('Redirecting to backend URL that increments counter:', shortUrl);
         setStatus('redirecting');
-        
+
         // Redireciona diretamente para a rota do backend que incrementa o contador
         // A rota /:shortUrl no backend vai incrementar o accessCount e redirecionar automaticamente
         const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3333';
         const redirectUrl = `${backendUrl}/${shortUrl}`;
-        
-        console.log('Redirecting to:', redirectUrl);
+
         redirected = true;
-        
+
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);
-        
+
       } catch (error) {
         console.error('Erro ao redirecionar:', error);
         // Redireciona para a página 404 quando o link não é encontrado

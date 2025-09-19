@@ -19,13 +19,10 @@ const queryClient = new QueryClient({
 
 function DebugLocation() {
   const location = useLocation();
-  console.log('Current location:', location);
   return null;
 }
 
 function App() {
-  console.log('App component rendered');
-  
   return (
     <QueryClientProvider client={queryClient}>
       <Router>

@@ -9,8 +9,7 @@
     "start": "node dist/server.js",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "drizzle-kit up:pg",
-    "db:studio": "drizzle-kit studio",
-    "test:r2": "tsx src/utils/testR2Connection.ts"
+    "db:studio": "drizzle-kit studio"
   },
   "keywords": [
     "url-shortener",
